@@ -1,0 +1,18 @@
+{
+  "name": "orbitwork",
+  "version": "1.0.0",
+  "description": "project management application",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "backend",
+    "API",
+    "creation"
+  ],
+  "author": "harkirat chadha",
+  "license": "ISC"
+}
