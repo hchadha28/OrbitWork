@@ -5,14 +5,18 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon index.js",
+    "start": "node index.js"
   },
+
   "keywords": [
     "backend",
     "API",
     "creation"
   ],
   "author": "harkirat chadha",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
 }
