@@ -2,7 +2,8 @@ import { User } from "../models/user.models";
 import { ApiResponse } from "../utils/api-response.js";
 import { asyncHandler } from "../utils/async-handler.js";
 import { ApiError } from "../utils/api-error.js";
-import { sendEmail } from "../utils/mail";
+import { emailVerificationMailgenContent, sendEmail } from "../utils/mail";
+
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
     const user = await User.findById(userId);
@@ -11,12 +12,13 @@ const generateAccessAndRefreshTokens = async (userId) => {
 
     user.refreshToken = refreshToken;
 
-    await user.save({ validateBeforeSave: false });
+    await user.save({ validateBeforeSave: false }); // save refresh token in database
     return { accessToken, refreshToken };
   } catch (error) {
-    throw new ApiError(500, "Something went wrong wile generating Token");
+    throw new ApiError(500, "Something went wrong while generating Token");
   }
 };
+
 const registerUser = asyncHandler(async (req, res) => {
   const { email, username, password, role } = req.body; // get data
 
@@ -42,4 +44,35 @@ const registerUser = asyncHandler(async (req, res) => {
 
   await user.save({ validateBeforeSave: false });
 
+  // sending token to user
+  await sendEmail({
+    email: user?.email,
+    subject: "Please verify your email.",
+    mailgenContent: emailVerificationMailgenContent(
+      user.username,
+      `${req.protocol}://${req.get(
+        "host"
+      )}/api/v1/users/verify-email/${unHashedToken}`
+    ),
+  });
+
+  const createdUser = await User.findById(user._id).select(
+    "-password -refreshToken -emailVerificationToken -emailVerificationExpiry"
+  );
+
+  if (!createdUser) {
+    throw new ApiError(500, "Something went wrong while registering a user.");
+  }
+
+  return res
+    .status(201)
+    .json(
+      new ApiResponse(
+        200,
+        { user: createdUser },
+        "User registered successfully and verification email has been sent on your email."
+      )
+    );
 });
+
+export { registerUser };
