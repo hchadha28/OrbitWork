@@ -1,5 +1,6 @@
 import Mailgen from "mailgen";
 import nodemailer from "nodemailer";
+const rgba = (r, g, b, a = 1) => `rgba(${r}, ${g}, ${b}, ${a})`;
 
 const sendEmail = async (options) => {
   const mailgenerator = new Mailgen({
@@ -48,7 +49,7 @@ const emailVerificationMailgenContent = (username, verificationUrl) => {
         instructions:
           "To verify your email, please click on the following button",
         button: {
-          color: rgba(34, 188, 102, 1),
+          color: rgba(9, 217, 106, 1),
           text: "Verify your email",
           link: verificationUrl,
         },
@@ -68,7 +69,7 @@ const forgotPasswordMailgenContent = (username, passwordResetUrl) => {
         instructions:
           "To reset your password, please click on the following button",
         button: {
-          color: rgba(54, 234, 129, 1),
+          color: rgba(9, 217, 106, 1),
           text: "Reset password",
           link: passwordResetUrl,
         },
