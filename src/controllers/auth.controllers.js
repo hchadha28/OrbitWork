@@ -147,9 +147,35 @@ const logout = asyncHandler(async (req, res) => {
     .status(200)
     .clearCookie("accessToken", options)
     .clearCookie("refreshToken", options)
-    .json(
-      new ApiResponse(200, {}, "User logged out")
-    )
+    .json(new ApiResponse(200, {}, "User logged out"));
 });
+const getCurrentUser = asyncHandler(async (req, res) => {
+  return res
+    .status(200)
+    .json(new ApiResponse(200, req.user, "Current user fetched successfully"));
+});
+const verifyEmail = asyncHandler(async (req, res) => {
+  const { verificationToken } = req.params;
 
-export { registerUser, login, logout };
+  if (!verificationToken)
+    throw new ApiError(400, "Email verification token is missing");
+
+  let hashedToken = crypto
+    .createHash("sha256")
+    .update(verificationToken)
+    .digest("hex");
+
+  const user = await User.findOne({
+    emailVerificationToken: hashedToken,
+    emailVerificationExpiry: { $gt: Date.now() },
+  });
+
+  if(!user) throw new ApiError(400, "Token is invalid or expired")
+});
+const changePassword = asyncHandler(async (req, res) => {});
+const refreshAccessToken = asyncHandler(async (req, res) => {});
+
+const forgotPassword = asyncHandler(async (req, res) => {});
+const resetPassword = asyncHandler(async (req, res) => {});
+
+export { registerUser, login, logout, getCurrentUser };
