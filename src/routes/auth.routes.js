@@ -15,10 +15,18 @@ const router = Router();
 // validate is the true middleware, we first pass our data through our own custom error checker,
 // then middleware, middleware itself calls next() if no errors
 
+
+
+/**
+ * unsecure routes
+ */
 router.route("/register").post(userRegisterValidator(), validate, registerUser);
 router.route("/login").post(userLoginValidator(), validate, login);
-// get and post are same in logout
 
+
+/**
+ * secure routes
+ */
 router.route("/logout").post(verifyJWT, logout);
 
 export default router;
