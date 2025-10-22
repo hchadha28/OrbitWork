@@ -373,14 +373,28 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
 });
 
 export {
-  registerUser,
-  login,
-  logout,
-  getCurrentUser,
-  verifyEmail,
-  resendEmailVerification,
-  refreshAccessToken,
-  forgotPasswordRequest,
-  changeCurrentPassword,
-  resetForgotPassword,
+  registerUser, // jwt not req
+  login, // jwt not req
+  logout, // jwt req 
+  getCurrentUser, // jwt req 
+  verifyEmail, // jwt not req 
+  resendEmailVerification, // jwt not req 
+  refreshAccessToken, // jwt req 
+  forgotPasswordRequest, // jwt not req
+  changeCurrentPassword, // jwt req
+  resetForgotPassword, // jwt not req
 };
+
+/**
+ *  The key difference is whether the user is already logged in. 
+ *  A JWT is like an "employee badge" 💳 you get after logging in;
+ *  you show it for things like getCurrentUser so the server knows
+ *  which user's info to look up in the database.
+ * 
+ *  But for actions like verifyEmail or resetPassword, the user
+ *  is "locked out"—they're either brand new or they forgot their password,
+ *  so they don't have a badge. 
+ *  For these, the server emails a "guest pass" 🎟️ (a one-time token). 
+ *  Clicking that link proves they own the email and lets them in just 
+ *  for that specific action, no JWT required.
+ */
